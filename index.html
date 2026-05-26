@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>AR Cat</title>
+
+  <!-- A-Frame -->
+  <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+
+  <!-- AR.js -->
+  <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+
+  <!-- Animation Mixer -->
+  <script src="https://cdn.jsdelivr.net/npm/aframe-extras@7.0.0/dist/aframe-extras.min.js"></script>
+</head>
+
+<body style="margin:0; overflow:hidden;">
+
+<a-scene embedded arjs>
+
+  <!-- Asset -->
+  <a-assets>
+    <audio id="cat1" src="sound_cat_1.mp3"></audio>
+    <audio id="cat2" src="sound_cat_2.mp3"></audio>
+  </a-assets>
+
+  <!-- Marker Hiro -->
+  <a-marker preset="hiro" id="marker">
+
+  <!-- Model Kucing -->
+    <a-entity
+        id="catModel"
+        gltf-model="toon_cat_free.glb"
+        position="0 0 0"
+        scale="0.004 0.004 0.004"
+        rotation="0 0 0"
+        animation-mixer="loop: repeat">
+    </a-entity>
+
+    </a-marker>
+
+  <!-- Camera -->
+  <a-entity camera></a-entity>
+
+</a-scene>
+
+<script>
+
+const marker = document.querySelector("#marker");
+
+const sound1 = document.querySelector("#cat1");
+const sound2 = document.querySelector("#cat2");
+
+let started = false;
+
+marker.addEventListener("markerFound", () => {
+
+  if(started) return;
+
+  started = true;
+
+  playSoundsLoop();
+
+});
+
+async function playSoundsLoop(){
+
+  while(true){
+
+    sound1.currentTime = 0;
+    await sound1.play();
+
+    await waitForEnd(sound1);
+
+    sound2.currentTime = 0;
+    await sound2.play();
+
+    await waitForEnd(sound2);
+
+  }
+
+}
+
+function waitForEnd(audio){
+
+  return new Promise(resolve => {
+
+    audio.onended = resolve;
+
+  });
+
+}
+
+</script>
+
+</body>
+</html>
